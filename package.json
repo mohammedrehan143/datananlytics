@@ -1,0 +1,20 @@
+{
+  "name": "datananlytics-probability-lab",
+  "version": "1.0.0",
+  "description": "Discrete Probability Distributions interactive laboratory web application for AIML.",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve ."
+  },
+  "keywords": [
+    "aiml",
+    "probability",
+    "binomial",
+    "poisson",
+    "geometric",
+    "data-analytics",
+    "lab"
+  ],
+  "author": "Mohammed Rehan",
+  "license": "MIT"
+}
