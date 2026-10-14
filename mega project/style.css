@@ -1,0 +1,130 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  height: 100vh;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at top, #1a0b2e, #05010b);
+  overflow: hidden;
+  font-family: Arial, Helvetica, sans-serif;
+  gap: 40px;
+}
+
+/* ========================= */
+/* Soundwave */
+/* ========================= */
+.soundwave {
+  display: flex;
+  gap: 7px;
+  height: 70px;
+  align-items: flex-end;
+  transition: 0.3s ease;
+}
+
+/* bars */
+.soundwave span {
+  width: 7px;
+  height: 12px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #b56cff, #00f5ff);
+  box-shadow: 0 0 12px rgba(0, 245, 255, 0.35);
+  animation: wave 1s infinite ease-in-out;
+}
+
+/* Idle mode = wave paused */
+.soundwave.idle span {
+  animation-play-state: paused;
+  opacity: 0.25;
+  transform: scaleY(0.3);
+  filter: blur(0.2px);
+}
+
+@keyframes wave {
+  0%, 100% { transform: scaleY(0.3); opacity: 0.55; }
+  50%      { transform: scaleY(2.6); opacity: 1; }
+}
+
+/* delays */
+.soundwave span:nth-child(1)  { animation-delay: 0s; }
+.soundwave span:nth-child(2)  { animation-delay: 0.1s; }
+.soundwave span:nth-child(3)  { animation-delay: 0.2s; }
+.soundwave span:nth-child(4)  { animation-delay: 0.3s; }
+.soundwave span:nth-child(5)  { animation-delay: 0.4s; }
+.soundwave span:nth-child(6)  { animation-delay: 0.3s; }
+.soundwave span:nth-child(7)  { animation-delay: 0.2s; }
+.soundwave span:nth-child(8)  { animation-delay: 0.1s; }
+.soundwave span:nth-child(9)  { animation-delay: 0s; }
+.soundwave span:nth-child(10) { animation-delay: 0.1s; }
+.soundwave span:nth-child(11) { animation-delay: 0.2s; }
+.soundwave span:nth-child(12) { animation-delay: 0.3s; }
+.soundwave span:nth-child(13) { animation-delay: 0.4s; }
+.soundwave span:nth-child(14) { animation-delay: 0.2s; }
+.soundwave span:nth-child(15) { animation-delay: 0.1s; }
+
+/* ========================= */
+/* ELSA Button */
+/* ========================= */
+.elsa-btn {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  outline: none;
+}
+
+/* Outer ring */
+.elsa-btn .ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(181, 108, 255, 0.5);
+  box-shadow: 0 0 22px rgba(181, 108, 255, 0.25);
+  transition: 0.3s ease;
+}
+
+/* Inner core */
+.elsa-btn .core {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,245,255,0.9), rgba(181,108,255,0.2));
+  box-shadow: 0 0 26px rgba(0, 245, 255, 0.35);
+  transition: 0.3s ease;
+}
+
+/* Label */
+.elsa-btn .label {
+  position: absolute;
+  bottom: -28px;
+  font-size: 14px;
+  letter-spacing: 3px;
+  color: rgba(255,255,255,0.85);
+}
+
+/* Active Mode */
+.elsa-btn.active .ring {
+  border-color: rgba(0, 245, 255, 0.75);
+  box-shadow: 0 0 35px rgba(0, 245, 255, 0.55);
+  animation: pulseRing 1.2s infinite ease-in-out;
+}
+
+.elsa-btn.active .core {
+  box-shadow: 0 0 50px rgba(0, 245, 255, 0.75);
+  transform: scale(1.05);
+}
+
+/* Ring pulse */
+@keyframes pulseRing {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50%      { transform: scale(1.08); opacity: 1; }
+}

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ELSA Wave UI</title>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Sound wave -->
+  <div class="soundwave idle" id="wave" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <!-- Button -->
+  <button class="elsa-btn" id="elsaBtn">
+    <div class="ring"></div>
+    <div class="core"></div>
+    <span class="label">ELSA</span>
+  </button>
+
+  <script>
+    const btn = document.getElementById("elsaBtn");
+    const wave = document.getElementById("wave");
+
+    btn.addEventListener("click", () => {
+      btn.classList.toggle("active");
+      wave.classList.toggle("idle");
+    });
+  </script>
+
+</body>
+</html>
