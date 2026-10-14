@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Discrete Probability Distributions | AIML Laboratory</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Optional Chart.js from CDN for enhanced charting (fallback canvas is built-in) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <!-- Header & Navigation -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand">
+        <span class="lab-tag">AIML Lab Module</span>
+        <h1 class="app-title">Discrete Probability Distributions</h1>
+      </div>
+      <nav class="nav-tabs" role="tablist" aria-label="Distribution Modules">
+        <button class="nav-btn active" data-tab="home" role="tab" aria-selected="true">Home</button>
+        <button class="nav-btn" data-tab="binomial" role="tab" aria-selected="false">Binomial</button>
+        <button class="nav-btn" data-tab="poisson" role="tab" aria-selected="false">Poisson</button>
+        <button class="nav-btn" data-tab="geometric" role="tab" aria-selected="false">Geometric</button>
+        <button class="nav-btn" data-tab="exercises" role="tab" aria-selected="false">Lab Exercises</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <!-- ================= HOME TAB ================= -->
+    <section id="tab-home" class="tab-panel active">
+      <div class="hero-card">
+        <h2>Undergraduate AIML Laboratory</h2>
+        <p class="subtitle">Interactive Exploration of Discrete Probability Distributions</p>
+        <p class="desc">
+          This educational application is designed to study the theoretical properties, 
+          probability mass functions (PMF), cumulative distribution functions (CDF), and 
+          graphical behaviors of discrete random variables.
+        </p>
+      </div>
+
+      <div class="distribution-grid">
+        <div class="dist-card active-card" onclick="switchTab('binomial')">
+          <div class="card-status active-status">Active Module</div>
+          <h3>1. Binomial Distribution</h3>
+          <p class="dist-desc">
+            Models the number of successes in <em>n</em> independent Bernoulli trials with constant probability <em>p</em>.
+          </p>
+          <div class="formula-preview">
+            <code>P(X = k) = C(n, k) &middot; p<sup>k</sup>(1 - p)<sup>n - k</sup></code>
+          </div>
+          <button class="btn-primary">Launch Binomial Module &rarr;</button>
+        </div>
+
+        <div class="dist-card active-card" onclick="switchTab('poisson')">
+          <div class="card-status active-status">Active Module</div>
+          <h3>2. Poisson Distribution</h3>
+          <p class="dist-desc">
+            Models the number of rare events occurring in a fixed interval of time or space with average rate <em>&lambda;</em>.
+          </p>
+          <div class="formula-preview">
+            <code>P(X = k) = (e<sup>-&lambda;</sup> &middot; &lambda;<sup>k</sup>) / k!</code>
+          </div>
+          <button class="btn-primary">Launch Poisson Module &rarr;</button>
+        </div>
+
+        <div class="dist-card" onclick="switchTab('geometric')">
+          <div class="card-status upcoming-status">Structure Ready</div>
+          <h3>3. Geometric Distribution</h3>
+          <p class="dist-desc">
+            Models the number of trials required to achieve the first success with success probability <em>p</em>.
+          </p>
+          <div class="formula-preview">
+            <code>P(X = k) = (1 - p)<sup>k - 1</sup> &middot; p</code>
+          </div>
+          <button class="btn-secondary">View Geometric Overview &rarr;</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= BINOMIAL TAB ================= -->
+    <section id="tab-binomial" class="tab-panel">
+      <div class="section-header">
+        <div>
+          <h2>Binomial Distribution: <code>X ~ B(n, p)</code></h2>
+          <p class="section-desc">Analyze trials, compute summary statistics, PMF, CDF, and visualize the distribution.</p>
+        </div>
+        <button class="btn-outline" onclick="resetBinomialDefaults()">Reset to Defaults (n=20, p=0.35)</button>
+      </div>
+
+      <!-- Input Controls (Prompt 2) -->
+      <div class="control-panel">
+        <h3>Distribution Parameters</h3>
+        <div class="inputs-grid">
+          <div class="input-group">
+            <label for="binom-n">
+              Number of trials (<em>n</em>):
+              <span class="badge" id="binom-n-val">20</span>
+            </label>
+            <div class="input-row">
+              <input type="range" id="binom-n-slider" min="1" max="100" value="20" step="1" />
+              <input type="number" id="binom-n" min="1" max="500" value="20" step="1" />
+            </div>
+            <span class="input-hint">Must be a positive integer (n &ge; 1).</span>
+            <span class="error-msg" id="binom-n-err"></span>
+          </div>
+
+          <div class="input-group">
+            <label for="binom-p">
+              Probability of success (<em>p</em>):
+              <span class="badge" id="binom-p-val">0.35</span>
+            </label>
+            <div class="input-row">
+              <input type="range" id="binom-p-slider" min="0" max="1" value="0.35" step="0.01" />
+              <input type="number" id="binom-p" min="0" max="1" value="0.35" step="0.01" />
+            </div>
+            <span class="input-hint">Must be between 0 and 1 (0 &le; p &le; 1).</span>
+            <span class="error-msg" id="binom-p-err"></span>
+          </div>
+        </div>
+
+        <div class="selected-summary">
+          <strong>Selected Values:</strong>
+          <span>Trials <em>n</em> = <span id="summary-n">20</span></span> |
+          <span>Success Prob <em>p</em> = <span id="summary-p">0.35</span></span> |
+          <span>Failure Prob <em>q = 1 - p</em> = <span id="summary-q">0.65</span></span>
+        </div>
+      </div>
+
+      <!-- Statistics Cards (Prompt 3) -->
+      <div class="stats-section">
+        <h3>Distribution Summary Statistics</h3>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-label">Mean (&mu; = E[X])</span>
+            <span class="stat-formula">np</span>
+            <span class="stat-value" id="stat-mean">7.0000</span>
+          </div>
+
+          <div class="stat-card">
+            <span class="stat-label">Variance (&sigma;&sup2;)</span>
+            <span class="stat-formula">np(1 - p)</span>
+            <span class="stat-value" id="stat-var">4.5500</span>
+          </div>
+
+          <div class="stat-card">
+            <span class="stat-label">Standard Deviation (&sigma;)</span>
+            <span class="stat-formula">&radic;[np(1 - p)]</span>
+            <span class="stat-value" id="stat-std">2.1331</span>
+          </div>
+
+          <div class="stat-card">
+            <span class="stat-label">Second Moment (E[X&sup2;])</span>
+            <span class="stat-formula">Variance + Mean&sup2;</span>
+            <span class="stat-value" id="stat-second-moment">53.5500</span>
+          </div>
+
+          <div class="stat-card">
+            <span class="stat-label">Skewness (&gamma;<sub>1</sub>)</span>
+            <span class="stat-formula">(1 - 2p) / &radic;[np(1 - p)]</span>
+            <span class="stat-value" id="stat-skewness">0.1406</span>
+          </div>
+        </div>
+        <div class="verification-note" id="default-verification-badge">
+          &#10004; Verified for default values: Mean = <strong>7</strong>, Variance = <strong>4.55</strong>.
+        </div>
+      </div>
+
+      <!-- Calculators: PMF (Prompt 4) & CDF (Prompt 5) -->
+      <div class="calc-row">
+        <!-- PMF Calculator -->
+        <div class="calc-card">
+          <div class="card-title-bar">
+            <h3>Binomial PMF Calculator</h3>
+            <span class="card-pill">P(X = k)</span>
+          </div>
+          <div class="math-banner">
+            <code>P(X = k) = C(n, k) &middot; p<sup>k</sup> &middot; (1 - p)<sup>n - k</sup></code>
+          </div>
+
+          <div class="input-group">
+            <label for="pmf-k">
+              Number of successes (<em>k</em>):
+            </label>
+            <input type="number" id="pmf-k" min="0" max="20" value="7" step="1" />
+            <span class="input-hint" id="pmf-k-hint">Constraint: 0 &le; k &le; 20</span>
+            <span class="error-msg" id="pmf-k-err"></span>
+          </div>
+
+          <div class="result-box">
+            <div class="result-primary">
+              <span class="result-label">P(X = <span id="pmf-k-display">7</span>) =</span>
+              <span class="result-number" id="pmf-result">0.1844</span>
+              <span class="result-percent" id="pmf-result-pct">(18.44%)</span>
+            </div>
+            <p class="explanation" id="pmf-explanation">
+              This means the probability of getting exactly 7 successes out of 20 trials is 0.1844.
+            </p>
+          </div>
+        </div>
+
+        <!-- CDF Calculator -->
+        <div class="calc-card">
+          <div class="card-title-bar">
+            <h3>Binomial CDF Calculator</h3>
+            <span class="card-pill">Cumulative</span>
+          </div>
+          <div class="math-banner">
+            <code>P(X &le; k) = &sum;<sub>i=0..k</sub> P(X = i)</code>
+          </div>
+
+          <div class="input-group">
+            <label for="cdf-k">
+              Cutoff successes (<em>k</em>):
+            </label>
+            <input type="number" id="cdf-k" min="0" max="20" value="7" step="1" />
+            <span class="input-hint" id="cdf-k-hint">Constraint: 0 &le; k &le; 20</span>
+            <span class="error-msg" id="cdf-k-err"></span>
+          </div>
+
+          <div class="result-box">
+            <div class="result-primary">
+              <span class="result-label">P(X &le; <span id="cdf-k-display">7</span>) =</span>
+              <span class="result-number" id="cdf-result-le">0.6010</span>
+              <span class="result-percent" id="cdf-result-le-pct">(60.10%)</span>
+            </div>
+            <div class="result-secondary">
+              <span class="result-label">P(X &gt; <span id="cdf-k-gt-display">7</span>) = 1 - P(X &le; <span id="cdf-k-gt-display2">7</span>) =</span>
+              <span class="result-number-small" id="cdf-result-gt">0.3990</span>
+            </div>
+            <p class="explanation" id="cdf-explanation">
+              &ldquo;P(X &le; k) means the probability of getting k or fewer successes.&rdquo;
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- PMF Graph (Prompt 6) -->
+      <div class="chart-container-card">
+        <div class="chart-header">
+          <div>
+            <h3>Binomial PMF Visualization</h3>
+            <p class="chart-subtitle">
+              Bar chart of P(X = k) for k = 0, 1, ..., n with vertical dashed reference line at Mean (&mu;).
+            </p>
+          </div>
+          <div class="chart-legend-custom">
+            <span class="legend-item"><span class="legend-box bar-color"></span> P(X = k)</span>
+            <span class="legend-item"><span class="legend-box selected-color"></span> Selected k</span>
+            <span class="legend-item"><span class="legend-line mean-line"></span> Mean (&mu;)</span>
+          </div>
+        </div>
+        <div class="canvas-wrapper">
+          <canvas id="binomChart" width="900" height="380"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= POISSON TAB ================= -->
+    <section id="tab-poisson" class="tab-panel">
+      <div class="section-header">
+        <div>
+          <h2>Poisson Distribution: <code>X ~ Poisson(&lambda;)</code></h2>
+          <p class="section-desc">Interactive module for event rate modeling, PMF, CDF, and multi-&lambda; comparisons.</p>
+        </div>
+        <div class="preset-buttons">
+          <span>Exercise 2 Presets:</span>
+          <button class="btn-chip" onclick="setPoissonLambda(2)">&lambda; = 2</button>
+          <button class="btn-chip active-chip" onclick="setPoissonLambda(6)">&lambda; = 6 (Lab Default)</button>
+          <button class="btn-chip" onclick="setPoissonLambda(10)">&lambda; = 10</button>
+        </div>
+      </div>
+
+      <div class="control-panel">
+        <h3>Distribution Parameter</h3>
+        <div class="inputs-grid single-input-grid">
+          <div class="input-group">
+            <label for="poisson-lambda">
+              Average rate of occurrences (<em>&lambda;</em>):
+              <span class="badge" id="poisson-lambda-val">6</span>
+            </label>
+            <div class="input-row">
+              <input type="range" id="poisson-lambda-slider" min="0.1" max="25" value="6" step="0.1" />
+              <input type="number" id="poisson-lambda" min="0.01" max="50" value="6" step="0.1" />
+            </div>
+            <span class="input-hint">&lambda; must be greater than 0 (&lambda; &gt; 0).</span>
+            <span class="error-msg" id="poisson-lambda-err"></span>
+          </div>
+        </div>
+
+        <div class="selected-summary">
+          <strong>Selected Value:</strong> Average rate <em>&lambda;</em> = <span id="summary-lambda">6</span>
+        </div>
+      </div>
+
+      <!-- Poisson Stats Cards -->
+      <div class="stats-section">
+        <h3>Poisson Summary Statistics</h3>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-label">Mean (&mu; = E[X])</span>
+            <span class="stat-formula">&lambda;</span>
+            <span class="stat-value" id="poi-stat-mean">6.0000</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Variance (&sigma;&sup2;)</span>
+            <span class="stat-formula">&lambda;</span>
+            <span class="stat-value" id="poi-stat-var">6.0000</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Standard Deviation (&sigma;)</span>
+            <span class="stat-formula">&radic;&lambda;</span>
+            <span class="stat-value" id="poi-stat-std">2.4495</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Second Moment (E[X&sup2;])</span>
+            <span class="stat-formula">&lambda; + &lambda;&sup2;</span>
+            <span class="stat-value" id="poi-stat-second">42.0000</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Skewness (&gamma;<sub>1</sub>)</span>
+            <span class="stat-formula">1 / &radic;&lambda;</span>
+            <span class="stat-value" id="poi-stat-skew">0.4082</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Poisson PMF & CDF -->
+      <div class="calc-row">
+        <!-- Poisson PMF -->
+        <div class="calc-card">
+          <div class="card-title-bar">
+            <h3>Poisson PMF Calculator</h3>
+            <span class="card-pill">P(X = k)</span>
+          </div>
+          <div class="math-banner">
+            <code>P(X = k) = (e<sup>-&lambda;</sup> &middot; &lambda;<sup>k</sup>) / k!</code>
+          </div>
+
+          <div class="input-group">
+            <label for="poi-pmf-k">Number of occurrences (<em>k</em>):</label>
+            <input type="number" id="poi-pmf-k" min="0" max="40" value="8" step="1" />
+            <span class="input-hint">Constraint: k &ge; 0 integer</span>
+          </div>
+
+          <div class="result-box">
+            <div class="result-primary">
+              <span class="result-label">P(X = <span id="poi-pmf-k-display">8</span>) =</span>
+              <span class="result-number" id="poi-pmf-result">0.1033</span>
+              <span class="result-percent" id="poi-pmf-pct">(10.33%)</span>
+            </div>
+            <p class="explanation" id="poi-pmf-explanation">
+              The probability of exactly 8 events occurring when the average rate is 6 is 0.1033.
+            </p>
+          </div>
+        </div>
+
+        <!-- Poisson CDF -->
+        <div class="calc-card">
+          <div class="card-title-bar">
+            <h3>Poisson CDF Calculator</h3>
+            <span class="card-pill">Cumulative</span>
+          </div>
+          <div class="math-banner">
+            <code>P(X &le; k) = &sum;<sub>i=0..k</sub> (e<sup>-&lambda;</sup> &middot; &lambda;<sup>i</sup>) / i!</code>
+          </div>
+
+          <div class="input-group">
+            <label for="poi-cdf-k">Cutoff occurrences (<em>k</em>):</label>
+            <input type="number" id="poi-cdf-k" min="0" max="40" value="5" step="1" />
+            <span class="input-hint">Constraint: k &ge; 0 integer</span>
+          </div>
+
+          <div class="result-box">
+            <div class="result-primary">
+              <span class="result-label">P(X &le; <span id="poi-cdf-k-display">5</span>) =</span>
+              <span class="result-number" id="poi-cdf-result-le">0.4457</span>
+              <span class="result-percent" id="poi-cdf-pct">(44.57%)</span>
+            </div>
+            <div class="result-secondary">
+              <span class="result-label">P(X &gt; <span id="poi-cdf-k-gt-display">5</span>) = 1 - P(X &le; 5) =</span>
+              <span class="result-number-small" id="poi-cdf-result-gt">0.5543</span>
+            </div>
+            <p class="explanation">
+              &ldquo;P(X &le; k) means the probability of observing k or fewer occurrences.&rdquo;
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Poisson PMF Graph -->
+      <div class="chart-container-card">
+        <div class="chart-header">
+          <div>
+            <h3>Poisson PMF Visualization</h3>
+            <p class="chart-subtitle">Distribution bar chart with vertical dashed reference line at Mean (&lambda;).</p>
+          </div>
+        </div>
+        <div class="canvas-wrapper">
+          <canvas id="poissonChart" width="900" height="380"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= GEOMETRIC TAB ================= -->
+    <section id="tab-geometric" class="tab-panel">
+      <div class="section-header">
+        <div>
+          <h2>Geometric Distribution: <code>X ~ Geom(p)</code></h2>
+          <p class="section-desc">Models the number of Bernoulli trials needed to get the first success.</p>
+        </div>
+      </div>
+
+      <div class="control-panel">
+        <h3>Distribution Parameter</h3>
+        <div class="inputs-grid single-input-grid">
+          <div class="input-group">
+            <label for="geom-p">
+              Probability of success on each trial (<em>p</em>):
+              <span class="badge" id="geom-p-val">0.25</span>
+            </label>
+            <div class="input-row">
+              <input type="range" id="geom-p-slider" min="0.01" max="1" value="0.25" step="0.01" />
+              <input type="number" id="geom-p" min="0.01" max="1" value="0.25" step="0.01" />
+            </div>
+            <span class="input-hint">Must be strictly between 0 and 1 (0 &lt; p &le; 1).</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-section">
+        <h3>Geometric Summary Statistics</h3>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-label">Mean (&mu; = E[X])</span>
+            <span class="stat-formula">1 / p</span>
+            <span class="stat-value" id="geom-stat-mean">4.0000</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Variance (&sigma;&sup2;)</span>
+            <span class="stat-formula">(1 - p) / p&sup2;</span>
+            <span class="stat-value" id="geom-stat-var">12.0000</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Standard Deviation (&sigma;)</span>
+            <span class="stat-formula">&radic;[(1 - p) / p&sup2;]</span>
+            <span class="stat-value" id="geom-stat-std">3.4641</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-container-card">
+        <div class="chart-header">
+          <h3>Geometric PMF: P(X = k) = (1 - p)<sup>k - 1</sup> &middot; p</h3>
+        </div>
+        <div class="canvas-wrapper">
+          <canvas id="geomChart" width="900" height="340"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= LAB EXERCISES TAB ================= -->
+    <section id="tab-exercises" class="tab-panel">
+      <div class="hero-card">
+        <h2>AIML Lab Experiment Exercises &amp; Solutions</h2>
+        <p class="subtitle">Interactive configuration and step-by-step verification</p>
+      </div>
+
+      <!-- Exercise 1 Card -->
+      <div class="exercise-card">
+        <div class="exercise-header">
+          <div>
+            <span class="exercise-badge">Exercise 1</span>
+            <h3>Interactive Binomial Distribution UI</h3>
+            <p class="exercise-params">Parameters: <strong>n = 15</strong>, <strong>p = 0.6</strong></p>
+          </div>
+          <button class="btn-primary" onclick="loadExercise1()">
+            &#9654; Load into Binomial Module
+          </button>
+        </div>
+
+        <div class="exercise-qa-grid">
+          <div class="qa-item">
+            <div class="qa-q">1. Mean and Variance:</div>
+            <div class="qa-a">
+              <code>Mean = n &middot; p = 15 &times; 0.6 = <strong>9.0</strong></code><br/>
+              <code>Variance = n &middot; p &middot; (1 - p) = 15 &times; 0.6 &times; 0.4 = <strong>3.6</strong></code><br/>
+              <span class="subtext">Std. Dev = &radic;3.6 &asymp; 1.8974</span>
+            </div>
+          </div>
+
+          <div class="qa-item">
+            <div class="qa-q">2. P(X = 9) &mdash; Probability of exactly 9 successes:</div>
+            <div class="qa-a">
+              <code>P(X = 9) = C(15, 9) &middot; (0.6)<sup>9</sup> &middot; (0.4)<sup>6</sup> = <strong>0.2066</strong> (20.66%)</code>
+            </div>
+          </div>
+
+          <div class="qa-item">
+            <div class="qa-q">3. P(X &le; 10) &mdash; Probability of at most 10 successes:</div>
+            <div class="qa-a">
+              <code>P(X &le; 10) = &sum;<sub>i=0..10</sub> P(X = i) = <strong>0.7827</strong> (78.27%)</code><br/>
+              <span class="subtext">Complement P(X &gt; 10) = 0.2173 (21.73%)</span>
+            </div>
+          </div>
+
+          <div class="qa-item">
+            <div class="qa-q">4. Region of Highest Probability:</div>
+            <div class="qa-a">
+              The peak (mode) of the PMF curve is centered at <strong>X = 9</strong> (with probability 0.2066), matching the theoretical mean &mu; = 9.
+            </div>
+          </div>
+        </div>
+
+        <div class="inference-box">
+          <strong>5. Inference from Visualization:</strong>
+          <p>
+            Because the success probability <em>p = 0.6 &gt; 0.5</em>, the distribution is slightly 
+            <strong>left-skewed (negatively skewed)</strong>, with skewness &gamma;<sub>1</sub> = (1 - 2(0.6)) / &radic;3.6 = -0.1054. 
+            The mass of probability is concentrated towards the upper half of trials (centered around X = 9).
+          </p>
+        </div>
+      </div>
+
+      <!-- Exercise 2 Card -->
+      <div class="exercise-card">
+        <div class="exercise-header">
+          <div>
+            <span class="exercise-badge">Exercise 2</span>
+            <h3>Interactive Poisson Distribution UI</h3>
+            <p class="exercise-params">AI-based Monitoring System: <strong>&lambda; = 6</strong> events on average</p>
+          </div>
+          <button class="btn-primary" onclick="loadExercise2()">
+            &#9654; Load into Poisson Module
+          </button>
+        </div>
+
+        <div class="exercise-qa-grid">
+          <div class="qa-item">
+            <div class="qa-q">1. Mean and Variance:</div>
+            <div class="qa-a">
+              <code>Mean (&mu;) = &lambda; = <strong>6.0</strong></code><br/>
+              <code>Variance (&sigma;&sup2;) = &lambda; = <strong>6.0</strong></code><br/>
+              <span class="subtext">Std. Dev = &radic;6 &asymp; 2.4495</span>
+            </div>
+          </div>
+
+          <div class="qa-item">
+            <div class="qa-q">2. P(X = 8) &mdash; Probability of exactly 8 events:</div>
+            <div class="qa-a">
+              <code>P(X = 8) = (e<sup>-6</sup> &middot; 6<sup>8</sup>) / 8! = <strong>0.1033</strong> (10.33%)</code>
+            </div>
+          </div>
+
+          <div class="qa-item">
+            <div class="qa-q">3. P(X &le; 5) &mdash; Probability of at most 5 events:</div>
+            <div class="qa-a">
+              <code>P(X &le; 5) = &sum;<sub>i=0..5</sub> (e<sup>-6</sup> &middot; 6<sup>i</sup>) / i! = <strong>0.4457</strong> (44.57%)</code>
+            </div>
+          </div>
+
+          <div class="qa-item">
+            <div class="qa-q">4. Comparison of Poisson PMF for &lambda; = 2, 6, and 10:</div>
+            <div class="qa-a">
+              <ul class="compact-list">
+                <li><strong>&lambda; = 2:</strong> Highly right-skewed, peak at X=1 and X=2, rapid decay.</li>
+                <li><strong>&lambda; = 6:</strong> Moderately skewed, peak at X=5 and X=6, broader spread.</li>
+                <li><strong>&lambda; = 10:</strong> Increasingly symmetric, peak at X=9 and X=10, bell-shaped.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="inference-box">
+          <strong>5. Inference from Graph:</strong>
+          <p>
+            As &lambda; increases:
+            (i) The central tendency (mean &mu; = &lambda;) shifts to the right;
+            (ii) The dispersion increases because variance equals &lambda; (&sigma; = &radic;&lambda;);
+            (iii) The skewness decreases (&gamma;<sub>1</sub> = 1/&radic;&lambda; &rarr; 0), causing the distribution 
+            to transform from an asymmetric, right-skewed curve into a symmetric bell curve, illustrating the 
+            <strong>Normal approximation to the Poisson distribution</strong>.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p>AIML Laboratory &bull; Discrete Probability Distributions &bull; Educational Software</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
