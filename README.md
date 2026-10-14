@@ -73,6 +73,33 @@ npx serve .
 ```
 
 ---
+# Probability Distributions Experiment
 
+## Status: Completed ✅
+
+Successfully completed the probability distributions experiment using the web application.
+
+### Experiments Performed
+
+- **Binomial Distribution:** Calculated the mean, variance, and probability of exactly 2 defects for \(n = 20\) and \(p = 0.05\).
+- **Probability Variation:** Changed the defect probability from \(0.05\) to \(0.10\) and observed the shift in the distribution.
+- **Poisson Distribution:** Calculated defect probabilities using \(\lambda = 5\) for 100 inspected products.
+- **Geometric Distribution:** Examined the probability of detecting the first defect on different inspection attempts using \(p = 0.05\).
+- **Graphical Analysis:** Visualized probability distributions and recorded observations.
+
+### Results
+
+| Distribution | Parameters | Results |
+|---|---|---|
+| Binomial | \(n=20,\ p=0.05\) | Mean = 1, Variance = 0.95 |
+| Binomial | \(n=20,\ p=0.10\) | Mean = 2, Variance = 1.8 |
+| Poisson | \(\lambda=5\) | Mean = 5, Variance = 5 |
+| Geometric | \(p=0.05\) | Mean attempts = 20 |
+
+### Conclusion
+
+The experiment demonstrated how Binomial, Poisson, and Geometric distributions can be applied to quality-control problems. Numerical calculations and graphical observations helped explain defect probabilities, changes in defect rates, and the probability of detecting the first defect.
+
+**Outcome:** All assigned experiment steps were completed, and the numerical results and graph observations were documented.
 ## 📜 License
 MIT License. Created for AIML Laboratory studies.
